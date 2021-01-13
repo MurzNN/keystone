@@ -1,5 +1,11 @@
 # @keystone-next/types
 
+## 10.1.0
+
+### Minor Changes
+
+- [`4768fbf83`](https://github.com/keystonejs/keystone/commit/4768fbf831ffff648e540c479a1954ae40e05aaa) [#4654](https://github.com/keystonejs/keystone/pull/4654) Thanks [@timleslie](https://github.com/timleslie)! - Added an `args` paramter to `Keystone.connect(args)`, which is passed through as the second argument to the config function `onConnect(keystone, args)`.
+
 ## 10.0.0
 
 ### Major Changes

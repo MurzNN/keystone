@@ -1,5 +1,14 @@
 # @keystonejs/test-utils
 
+## 10.1.4
+
+### Patch Changes
+
+- Updated dependencies [[`49eec4dea`](https://github.com/keystonejs/keystone/commit/49eec4dea522c6a043b3eaf93fc8be8256b00aa6), [`3b7a056bb`](https://github.com/keystonejs/keystone/commit/3b7a056bb835482ceb408a70bf97300741552d19), [`4768fbf83`](https://github.com/keystonejs/keystone/commit/4768fbf831ffff648e540c479a1954ae40e05aaa), [`74a8528ea`](https://github.com/keystonejs/keystone/commit/74a8528ea0dad739f4f16af32fe4f8926a188b61)]:
+  - @keystonejs/adapter-prisma@1.1.2
+  - @keystonejs/keystone@18.1.0
+  - @keystone-next/keystone@9.0.2
+
 ## 10.1.3
 
 ### Patch Changes
