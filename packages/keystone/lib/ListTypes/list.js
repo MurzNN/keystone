@@ -255,9 +255,12 @@ module.exports = class List {
   }
 
   getFieldsWithAccess({ schemaName, access }) {
-    return this.fields
-      .filter(({ path }) => path !== 'id') // Exclude the id fields update types
+    let fieldsWithAccess = this.fields
       .filter(field => field.access[schemaName][access]); // If it's globally set to false, makes sense to never let it be updated
+    if (access != 'create') {
+      fieldsWithAccess = fieldsWithAccess.filter(({ path }) => path !== 'id') // Exclude the id fields for non-create operations
+    }
+    return fieldsWithAccess;
   }
 
   getAllFieldsWithAccess({ schemaName, access }) {
