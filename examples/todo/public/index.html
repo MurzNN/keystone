@@ -77,7 +77,7 @@
           <div>
             <form
               onSubmit={e => {
-                console.log('submit id= ' + id + ' name= ' + name);
+                if(id == '') id = "task" + Math.floor(Math.random() * (9999 - 1000 + 1) + 1000);
                 e.preventDefault();
                 graphql(ADD_TODO, { id: id, name: name }).then(refetch);
                 setName('');
