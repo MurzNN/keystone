@@ -52,8 +52,8 @@
       `;
 
       const ADD_TODO = `
-        mutation AddTodo($name: String!) {
-          createTodo(data: { name: $name }) {
+        mutation AddTodo($id: String!, $name: String!) {
+          createTodo(data: { id: $id, name: $name }) {
             name
             id
           }
@@ -70,26 +70,40 @@
       `;
 
       const Form = ({ refetch }) => {
-        let [value, setValue] = useState('');
+        let [name, setName] = useState('');
+        let [id, setId] = useState('');
 
         return (
           <div>
             <form
               onSubmit={e => {
+                console.log('submit id= ' + id + ' name= ' + name);
                 e.preventDefault();
-                graphql(ADD_TODO, { name: value }).then(refetch);
-                setValue('');
+                graphql(ADD_TODO, { id: id, name: name }).then(refetch);
+                setName('');
+                setId('');
               }}
             >
               <input
                 placeholder="Add new item"
                 style={styles.formInput}
                 className="addItem"
-                value={value}
+                value={name}
                 onChange={event => {
-                  setValue(event.target.value);
+                  setName(event.target.value);
                 }}
               />
+
+              <input
+                placeholder="The text id of new item"
+                style={styles.formInput}
+                className="addItemId"
+                value={id}
+                onChange={event => {
+                  setId(event.target.value);
+                }}
+              />
+              <input type="submit" />
             </form>
           </div>
         );
@@ -97,7 +111,8 @@
 
       const Item = props => (
         <li style={styles.listItem}>
-          {props.todo.name}
+
+          {props.todo.name} (id = {props.todo.id})
           <button
             style={styles.deleteButton}
             className="trash"
@@ -154,7 +169,7 @@
           <div style={styles.app}>
             <h1 style={styles.mainHeading}>Welcome to Keystone 5!</h1>
             <p style={styles.introText}>
-              Here's a simple demo app that lets you add/remove todo items. Create a few entries,
+              Here's a simple demo app that lets you add/remove todo items with ID. Create a few entries,
               then go check them out from your <a href="/admin">Keystone 5 Admin UI</a>!
             </p>
             <hr style={styles.divider} />

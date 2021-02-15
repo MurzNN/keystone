@@ -12,9 +12,12 @@ const keystone = new Keystone({
 keystone.createList('Todo', {
   schemaDoc: 'A list of things which need to be done',
   fields: {
+    id: { type: Text, schemaDoc: 'Custom text id instead of Mongo\'s ObjectId', isRequired: true },
     name: { type: Text, schemaDoc: 'This is the thing you need to do', isRequired: true },
   },
 });
+// Workaround for allowing strings in Mongo _id field
+keystone.lists.Todo.adapter.schema.add({ _id: 'string' });
 
 module.exports = {
   keystone,
