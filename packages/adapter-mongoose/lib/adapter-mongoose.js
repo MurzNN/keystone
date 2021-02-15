@@ -245,8 +245,8 @@ class MongooseListAdapter extends BaseListAdapter {
   }
 
   _parseIdValue(value) {
-    // Checks the type of id field in List and converts to
-    // ObjectId only if instance type is matched
+    // Checks the type of id field of current List
+    // and converts to ObjectId only if matched
     if (this.schema.paths._id.instance === 'ObjectId') {
       return mongoose.Types.ObjectId(value);
     } else {

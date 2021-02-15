@@ -52,7 +52,7 @@
       `;
 
       const ADD_TODO = `
-        mutation AddTodo($id: String!, $name: String!) {
+        mutation AddTodo($id: String, $name: String!) {
           createTodo(data: { id: $id, name: $name }) {
             name
             id
@@ -77,7 +77,6 @@
           <div>
             <form
               onSubmit={e => {
-                if(id == '') id = "task" + Math.floor(Math.random() * (9999 - 1000 + 1) + 1000);
                 e.preventDefault();
                 graphql(ADD_TODO, { id: id, name: name }).then(refetch);
                 setName('');
