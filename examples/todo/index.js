@@ -12,21 +12,20 @@ const keystone = new Keystone({
 keystone.createList('Todo', {
   schemaDoc: 'A todo list with string id',
   fields: {
-    id: {
-      type: Text,
-      schemaDoc: 'Custom text id instead of Mongo\'s ObjectId',
-      isRequired: true,
-      isUnique: true,
-      isPrimaryKey: true,
-      defaultValue: ({ context, originalInput }) => {
-        return "task_" + Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
-      },
-    },
     name: { type: Text, schemaDoc: 'This is the thing you need to do', isRequired: true },
   },
 });
-// Workaround for allowing strings in Mongo _id field
-keystone.lists.Todo.adapter.schema.add({ _id: 'string' });
+
+// Workaround for make Mongo _id field as String
+keystone.lists.Todo.adapter.schema.add({
+  _id: {
+    type: String,
+    auto: true,
+    default: function () {
+      return "task_" + Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
+    }
+  }
+});
 
 keystone.createList('Todo2', {
   schemaDoc: 'A todo2 list with default id as Mongo ObjectId',
