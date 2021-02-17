@@ -26,6 +26,7 @@ keystone.lists.Todo.adapter.schema.add({
     }
   }
 });
+keystone.lists.Todo.adapter.schema.virtual('id');
 
 keystone.createList('Todo2', {
   schemaDoc: 'A todo2 list with default id as Mongo ObjectId',
