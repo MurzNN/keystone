@@ -36,7 +36,7 @@ function queryParser({ listAdapter, getUID }, query, pathSoFar = [], include) {
     } else if (['$search', '$sortBy', '$orderBy', '$skip', '$first', '$count'].includes(key)) {
       return { postJoinPipeline: [modifierTokenizer(listAdapter, query, key, path)] };
     } else if (key === 'id') {
-      if (getType(value) !== undefined) {
+      if (listAdapter.schema.paths['_id'].instance !== 'ObjectID') {
         return { matchTerm: { _id: value } };
       } else {
         return { matchTerm: simpleTokenizer(listAdapter, query, key, path) };

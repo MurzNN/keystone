@@ -353,9 +353,8 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
       // Otherwise, we're are hosting a foreign key
       const { refListKey, config } = this;
       const typeString = this.getListByKey(this.refListKey).adapter.schema.paths['_id'].instance
-      if (typeString == 'ObjectID') {
-        type = mongoose.Types.ObjectId;
-      } else {
+      let type = mongoose.Types.ObjectId;
+      if (typeString != 'ObjectID') {
         type = typeString;
       }
       schema.add({ [this.path]: this.mergeSchemaOptions({ type, ref: refListKey }, config) });
