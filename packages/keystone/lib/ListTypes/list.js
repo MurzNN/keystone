@@ -381,6 +381,7 @@ module.exports = class List {
   }
 
   async getAccessControlledItem(id, access, { context, operation, gqlName, info }) {
+    // TODO: add checking for type and make id = parseInt(id);
     const _throwAccessDenied = msg => {
       graphqlLogger.debug({ id, operation, access, gqlName }, msg);
       graphqlLogger.info({ id, operation, gqlName }, 'Access Denied');

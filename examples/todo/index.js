@@ -1,6 +1,6 @@
 const { Keystone } = require('@keystonejs/keystone');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
-const { Text, Relationship } = require('@keystonejs/fields');
+const { Text, Integer, Relationship } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
@@ -34,6 +34,25 @@ keystone.createList('Todo2', {
     name: { type: Text, schemaDoc: 'This is the thing you need to do', isRequired: true },
   },
 });
+
+keystone.createList('Todo3', {
+  schemaDoc: 'A todo3 list with number id',
+  fields: {
+    id: { type: Integer },
+    name: { type: Text, schemaDoc: 'This is the thing you need to do', isRequired: true },
+  },
+});
+// Workaround for make Mongo _id field as Number
+keystone.lists.Todo3.adapter.schema.add({
+  _id: {
+    type: Number,
+    auto: true,
+    default: function () {
+      return Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
+    }
+  }
+});
+
 
 keystone.createList('RelationshipTest', {
   schemaDoc: 'Test of relationship',
