@@ -659,6 +659,10 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   //   `f`: (non-string methods only) A value transformation function which converts from a string type
   //        provided by graphQL into a native adapter type.
   equalityConditions(dbPath, f = identity) {
+    // Workaround for convert id field to Mongo's _id
+    if(dbPath == 'id') {
+        dbPath = '_id'
+    }
     return {
       [this.path]: value => ({ [dbPath]: { $eq: f(value) } }),
       [`${this.path}_not`]: value => ({ [dbPath]: { $ne: f(value) } }),
@@ -666,6 +670,10 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   equalityConditionsInsensitive(dbPath, f = identity) {
+    // Workaround for convert id field to Mongo's _id
+    if(dbPath == 'id') {
+        dbPath = '_id'
+    }
     return {
       [`${this.path}_i`]: value => ({ [dbPath]: new RegExp(`^${escapeRegExp(f(value))}$`, 'i') }),
       [`${this.path}_not_i`]: value => ({
@@ -675,8 +683,9 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   inConditions(dbPath, f = identity) {
-    if (dbPath == 'id') {
-      dbPath = '_id';
+    // Workaround for convert id field to Mongo's _id
+    if(dbPath == 'id') {
+        dbPath = '_id'
     }
     return {
       [`${this.path}_in`]: value => ({ [dbPath]: { $in: value.map(s => f(s)) } }),
@@ -685,6 +694,10 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   orderingConditions(dbPath, f = identity) {
+    // Workaround for convert id field to Mongo's _id
+    if(dbPath == 'id') {
+        dbPath = '_id'
+    }
     return {
       [`${this.path}_lt`]: value => ({ [dbPath]: { $lt: f(value) } }),
       [`${this.path}_lte`]: value => ({ [dbPath]: { $lte: f(value) } }),
@@ -694,6 +707,10 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   stringConditions(dbPath, f = identity) {
+    // Workaround for convert id field to Mongo's _id
+    if(dbPath == 'id') {
+        dbPath = '_id'
+    }
     return {
       [`${this.path}_contains`]: value => ({
         [dbPath]: { $regex: new RegExp(escapeRegExp(f(value))) },
@@ -717,6 +734,10 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   stringConditionsInsensitive(dbPath) {
+    // Workaround for convert id field to Mongo's _id
+    if(dbPath == 'id') {
+        dbPath = '_id'
+    }
     const f = escapeRegExp;
     return {
       [`${this.path}_contains_i`]: value => ({ [dbPath]: { $regex: new RegExp(f(value), 'i') } }),
