@@ -183,7 +183,8 @@ module.exports = class List {
 
     // Helpful errors for misconfigured lists
     Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
-      if (!this.isAuxList && fieldKey[0] === '_') {
+      if (fieldKey == '_id') fieldKey = 'id';
+      if (!this.isAuxList && fieldKey[0] === '_' ) {
         throw new Error(
           `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`
         );

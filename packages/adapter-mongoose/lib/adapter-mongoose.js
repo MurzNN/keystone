@@ -137,7 +137,6 @@ class MongooseAdapter extends BaseKeystoneAdapter {
 
   async checkDatabaseVersion() {
     let info;
-
     try {
       info = await new this.mongoose.mongo.Admin(this.mongoose.connection.db).buildInfo();
     } catch (error) {
@@ -212,7 +211,10 @@ class MongooseListAdapter extends BaseListAdapter {
     if (this.configureMongooseSchema) {
       this.configureMongooseSchema(this.schema, { mongoose: this.mongoose });
     }
-
+    if(this.schema.paths._id.instance !== 'ObjectID') {
+      this.schema.remove('id');
+      this.schema.virtual('id');
+    }
     // 4th param is 'skipInit' which avoids calling `model.init()`.
     // We call model.init() later, after we have a connection up and running to
     // avoid issues with Mongoose's lazy queue and setting up the indexes.
@@ -309,13 +311,8 @@ class MongooseListAdapter extends BaseListAdapter {
   }
 
   async _createSingle(realData) {
-    // Converting passed id value to Mongo's _id field
-    if (realData.id) {
-      realData._id = realData.id;
-      delete realData.id;
-    }
     const item = (await this.model.create(realData)).toObject();
-
+    item.id = item._id;
     const itemId = item._id;
     return { item, itemId };
   }
@@ -366,12 +363,6 @@ class MongooseListAdapter extends BaseListAdapter {
   }
 
   async _create(data) {
-    // Converting passed Mongo's _id value to id field
-    if (data._id) {
-      data.id = data._id;
-      delete data._id;
-    }
-
     const realData = pick(data, this.realKeys);
 
     // Unset any real 1:1 fields
@@ -684,6 +675,9 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   inConditions(dbPath, f = identity) {
+    if (dbPath == 'id') {
+      dbPath = '_id';
+    }
     return {
       [`${this.path}_in`]: value => ({ [dbPath]: { $in: value.map(s => f(s)) } }),
       [`${this.path}_not_in`]: value => ({ [dbPath]: { $not: { $in: value.map(s => f(s)) } } }),
