@@ -12,6 +12,7 @@ const keystone = new Keystone({
 keystone.createList('Todo', {
   schemaDoc: 'A todo list with string id',
   fields: {
+    id: { type: Text },
     name: { type: Text, schemaDoc: 'This is the thing you need to do', isRequired: true },
   },
 });
@@ -26,7 +27,6 @@ keystone.lists.Todo.adapter.schema.add({
     }
   }
 });
-keystone.lists.Todo.adapter.schema.virtual('id');
 
 keystone.createList('Todo2', {
   schemaDoc: 'A todo2 list with default id as Mongo ObjectId',
