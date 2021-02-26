@@ -299,6 +299,11 @@ class MongooseListAdapter extends BaseListAdapter {
   }
 
   async _createSingle(realData) {
+    // Converting passed id value to Mongo's _id field
+    if (realData.id) {
+      realData._id = realData.id;
+      delete realData.id;
+    }
     const item = (await this.model.create(realData)).toObject();
 
     const itemId = item._id;
@@ -351,6 +356,12 @@ class MongooseListAdapter extends BaseListAdapter {
   }
 
   async _create(data) {
+    // Converting passed Mongo's _id value to id field
+    if (data._id) {
+      data.id = data._id;
+      delete data._id;
+    }
+
     const realData = pick(data, this.realKeys);
 
     // Unset any real 1:1 fields
