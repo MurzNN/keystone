@@ -152,9 +152,10 @@ class PrismaAdapter extends BaseKeystoneAdapter {
                   (r.cardinality === '1:1' && isLeft)
                 ) {
                   // We're the owner of the foreign key column
+                  let format = f.getListByKey(f.refListKey).adapter._getFieldStorageFormat('id');
                   return [
                     `${f.path} ${f.refListKey}? @relation("${relName}", fields: [${f.path}Id], references: [id])`,
-                    `${f.path}Id Int? @map("${r.columnName}")`,
+                    `${f.path}Id ${format}? @map("${r.columnName}")`,
                   ];
                 } else if (r.cardinality === '1:1') {
                   return [`${f.path} ${f.refListKey}? @relation("${relName}")`];
@@ -319,11 +320,12 @@ class PrismaListAdapter extends BaseListAdapter {
         return Boolean(value);
       case 'DateTime':
       case 'String':
-        return value + '' || '';
+        return (value || '') + '';
       case 'Int':
+        return parseInt(value) || null;
       case 'Float':
       case 'Decimal':
-        return Number(value) || null;
+        return parseFloat(value) || null;
       default:
         return value;
     }
@@ -332,7 +334,6 @@ class PrismaListAdapter extends BaseListAdapter {
   _getFieldStorageFormat(path) {
     let prismaSchema = this.fieldAdaptersByPath[path].getPrismaSchema();
     if (prismaSchema.length > 1) return 'mixed';
-    prismaSchema = prismaSchema[0];
     let prismaSchemaFormat = prismaSchema[0].replace(/^(\w+)\s+(\w+).+$/, '$2');
     return prismaSchemaFormat;
   }
@@ -343,7 +344,9 @@ class PrismaListAdapter extends BaseListAdapter {
         this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].isRelationship
           ? {
               connect: Array.isArray(value)
-                ? value.map(x => ({ id: this._formatValue(x, path) }))
+                ? value.map(x => {
+                    return { id: this._formatValue(x, path) };
+                  })
                 : { id: this._formatValue(value, path) },
             }
           : this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].gqlToPrisma
@@ -432,9 +435,9 @@ class PrismaListAdapter extends BaseListAdapter {
             ? a.rel.left.path
             : a.rel.right.path
           : `from_${a.rel.left.listKey}_${a.rel.left.path}`; // One-sided
-        ret.where[path] = { some: { id: from._formatValue(from.fromId, 'id') } };
+        ret.where[path] = { some: { id: from.fromList.adapter._formatValue(from.fromId, 'id') } };
       } else {
-        ret.where[a.rel.columnName] = { id: from._formatValue(from.fromId, 'id') };
+        ret.where[a.rel.columnName] = { id: from.fromList.adapter._formatValue(from.fromId, 'id') };
       }
     }
 
