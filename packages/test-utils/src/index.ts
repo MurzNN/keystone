@@ -72,7 +72,7 @@ async function setupFromConfig({
   const { keystone, createContext, graphQLSchema } = createSystem(
     config,
     path.resolve('.keystone'),
-    ''
+    'prototype'
   );
 
   const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
@@ -116,7 +116,6 @@ async function setupServer({
     new GraphQLApp({
       schemaName,
       apiPath: '/api/graphql',
-      graphiqlPath: '/admin/graphiql',
       apollo: {
         tracing: true,
         cacheControl: {

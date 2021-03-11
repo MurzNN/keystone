@@ -11,8 +11,10 @@ const {
 const { defaultObj, mapKeys, identity, flatten } = require('@keystone-next/utils-legacy');
 
 class PrismaAdapter extends BaseKeystoneAdapter {
-  constructor() {
+  constructor(config = {}) {
     super(...arguments);
+    this._prismaClient = config.prismaClient;
+
     this.listAdapterClass = PrismaListAdapter;
     this.name = 'prisma';
     this.provider = this.config.provider || 'postgresql';
@@ -58,9 +60,16 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this._runPrismaCmd(`migrate deploy --preview-feature`);
   }
 
-  async _connect({ rels }) {
+  async _getPrismaClient({ rels }) {
+    if (this._prismaClient) {
+      return this._prismaClient;
+    }
     await this._generateClient(rels);
-    const { PrismaClient } = require(this.clientPath);
+    return require(this.clientPath).PrismaClient;
+  }
+
+  async _connect({ rels }) {
+    const PrismaClient = await this._getPrismaClient({ rels });
     this.prisma = new PrismaClient({
       log: this.enableLogging && ['query'],
       datasources: { [this.provider]: { url: this._url() } },
@@ -104,7 +113,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   async _runMigrations() {
     if (this.migrationMode === 'prototype') {
       // Sync the database directly, without generating any migration
-      this._runPrismaCmd(`db push --force --preview-feature`);
+      this._runPrismaCmd(`db push --accept-data-loss --preview-feature`);
     } else if (this.migrationMode === 'createOnly') {
       // Generate a migration, but do not apply it
       this._runPrismaCmd(`migrate dev --create-only --name keystone-${cuid()} --preview-feature`);
@@ -214,7 +223,6 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       generator client {
         provider = "prisma-client-js"
         output = "${clientDir}"
-        previewFeatures = ["nativeTypes"]
       }`;
     return await formatSchema({ schema: header + models.join('\n') + '\n' + enums.join('\n') });
   }
@@ -254,7 +262,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       } else {
         // If we're in prototype mode then we need to rebuild the tables after a reset
         this._runPrismaCmd(`migrate reset --force --preview-feature`);
-        this._runPrismaCmd(`db push --force --preview-feature`);
+        this._runPrismaCmd(`db push --accept-data-loss --preview-feature`);
       }
     } else {
       this._runPrismaCmd(`migrate reset --force --preview-feature`);

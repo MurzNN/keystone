@@ -278,16 +278,6 @@ module.exports = class List {
     ];
   }
 
-  getFieldsRelatedTo(listKey) {
-    return this.fields.filter(
-      ({ isRelationship, refListKey }) => isRelationship && refListKey === listKey
-    );
-  }
-
-  getFieldByPath(path) {
-    return this.fieldsByPath[path];
-  }
-
   getPrimaryKey() {
     return this.fieldsByPath['id'];
   }
@@ -1094,7 +1084,7 @@ module.exports = class List {
 
   getGqlMutations({ schemaName }) {
     const schemaAccess = this.access[schemaName];
-    const mutations = flatten(this.fields.map(field => field.getGqlAuxMutations()));
+    const mutations = [];
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
@@ -1289,11 +1279,6 @@ module.exports = class List {
         };
       },
     };
-  }
-
-  gqlAuxMutationResolvers() {
-    // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers()));
   }
 
   gqlMutationResolvers({ schemaName }) {

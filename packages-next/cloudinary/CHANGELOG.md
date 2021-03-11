@@ -1,5 +1,22 @@
 # @keystone-next/cloudinary
 
+## 3.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`a2c52848a`](https://github.com/keystonejs/keystone/commit/a2c52848a3a7b66a1968a430040887194e6138d1), [`acc6e9772`](https://github.com/keystonejs/keystone/commit/acc6e9772b4a312a62ea756777034638c03a3761)]:
+  - @keystone-next/admin-ui@11.0.0
+  - @keystone-next/fields-cloudinary-image-legacy@3.0.1
+
+## 3.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`afccc27ea`](https://github.com/keystonejs/keystone/commit/afccc27eaa3a0574fa326dcc791526c4ac8f5e43), [`9b202b31a`](https://github.com/keystonejs/keystone/commit/9b202b31a7d4944b709fe0ce58d6ca7ec1523a02)]:
+  - @keystone-next/fields-cloudinary-image-legacy@3.0.0
+  - @keystone-next/admin-ui@10.0.1
+  - @keystone-next/types@14.0.1
+
 ## 3.0.1
 
 ### Patch Changes
